@@ -3,6 +3,8 @@ import random
 import csv
 import time
 import difflib
+import asyncio
+
 from discord.ext import commands
 import os
 
