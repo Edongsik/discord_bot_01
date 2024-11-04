@@ -10,6 +10,12 @@ import os
 
 TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 
+TOKEN = os.getenv('DISCORD_BOT_TOKEN')
+if TOKEN is None:
+    print("ERROR: DISCORD_BOT_TOKEN is not set.")
+else:
+    print("Token found.")
+    
 # CSV 파일 경로
 csv_file_path = "/home/ec2-user/discord_bot_01/typing_sentences.csv"
 
