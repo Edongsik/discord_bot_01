@@ -27,3 +27,11 @@ jobs:
     - name: Deploy to EC2
       run: |
         scp -r ./ ec2-instance:/path/to/remote/directory
+
+    - name: Set up environment and run bot
+      run: |
+        ssh ec2-instance << 'EOF'
+        export DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }}
+        cd /path/to/remote/directory
+        nohup python3 bot3.py &
+        EOF
