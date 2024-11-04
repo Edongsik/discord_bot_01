@@ -1,11 +1,11 @@
 import discord
 import asyncio
-import nest_asyncio
+#import nest_asyncio
 import random
 from discord.ext import commands
 import os
 
-nest_asyncio.apply()
+#nest_asyncio.apply()
 TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 
 # Intents 설정
