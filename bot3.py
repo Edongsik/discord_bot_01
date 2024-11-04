@@ -11,7 +11,7 @@ import os
 TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 
 # CSV 파일 경로
-csv_file_path = "/home/ec2-user/discord_bot_01/discord_bot_01/discord_bot_01/typing_sentences.csv"
+csv_file_path = "/home/ec2-user/discord_bot_01/typing_sentences.csv"
 
 # 연습용 문장 리스트 가져오기
 def load_sentences_from_csv(file_path):
