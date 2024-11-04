@@ -1,26 +1,33 @@
 import discord
 import random
+import csv
 import time
 import difflib
 from discord.ext import commands
 import os
 
-#nest_asyncio.apply()
+# Discord Bot Token
 TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 
+# CSV 파일 경로
+csv_file_path = "/home/ec2-user/typing_sentences.csv"
+
+# 연습용 문장 리스트 가져오기
+def load_sentences_from_csv(file_path):
+    sentences = []
+    with open(file_path, mode='r', newline='', encoding='utf-8') as file:
+        reader = csv.reader(file)
+        for row in reader:
+            sentences.append(row[0])  # 첫 번째 열에서 문장을 가져옴
+    return sentences
+
 # 연습용 문장 리스트
-sentences = [
-    "The quick brown fox jumps over the lazy dog.",
-    "Typing is a great skill to improve your productivity.",
-    "Discord bots are fun to code and play with.",
-    "Practice makes perfect when it comes to typing."
-]
+sentences = load_sentences_from_csv(csv_file_path)
 
 leaderboard = {}
 
 intents = discord.Intents.default()
 intents.messages = True
-intents.message_content = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 @bot.event
@@ -53,7 +60,7 @@ async def ask_for_retry(ctx):
             await ctx.send("타자 연습을 종료합니다. 수고하셨습니다!")
         else:
             await ctx.send("잘못된 응답입니다. (yes/no)로 답변해주세요.")
-            await ask_for_retry(ctx)  # 재귀 호출로 다시 질문
+            await ask_for_retry(ctx)
     except asyncio.TimeoutError:
         await ctx.send("시간 초과! 다시 시도하려면 `!타자연습`을 입력해주세요.")
 
@@ -82,7 +89,7 @@ async def typing_practice(ctx):
             differences = highlight_differences(sentence, msg.content.strip())
             await ctx.send(f"틀렸습니다. 정답은:\n`{sentence}`\n\n입력한 내용:\n`{msg.content}`\n\n차이점:\n{differences}")
 
-        await ask_for_retry(ctx)  # 연습을 다시 시도할지 묻기
+        await ask_for_retry(ctx)
 
     except asyncio.TimeoutError:
         await ctx.send("시간 초과! 다시 시도하려면 `!타자연습`을 입력해주세요.")
@@ -96,8 +103,11 @@ async def show_leaderboard(ctx):
     sorted_leaderboard = sorted(leaderboard.items(), key=lambda x: x[1])
     message = "**리더보드**:\n"
     for idx, (user_id, time_record) in enumerate(sorted_leaderboard[:10], start=1):
-        user = await bot.fetch_user(user_id)
-        message += f"{idx}. {user.name} - {time_record:.2f}초\n"
+        user = bot.get_user(int(user_id))
+        if user:
+            message += f"{idx}. {user.name} - {time_record:.2f}초\n"
+        else:
+            message += f"{idx}. Unknown User - {time_record:.2f}초\n"
     await ctx.send(message)
 
 bot.run(TOKEN)
