@@ -1,1 +1,29 @@
+name: Deploy to AWS EC2
 
+on:
+  push:
+    branches:
+      - main  # main 브랜치에 푸시될 때 실행
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.G_TOKEN }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        echo "Host ec2-instance
+          HostName your-ec2-public-ip
+          User ec2-user
+          IdentityFile ~/.ssh/id_rsa
+          StrictHostKeyChecking no" > ~/.ssh/config
+
+    - name: Deploy to EC2
+      run: |
+        scp -r ./ ec2-instance:/path/to/remote/directory
