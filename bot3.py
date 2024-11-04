@@ -89,7 +89,9 @@ async def typing_practice(ctx):
                 await ctx.send(f"{ctx.author.name}님의 최고 기록이 갱신되었습니다!")
         else:
             differences = highlight_differences(sentence, msg.content.strip())
-            await ctx.send(f"틀렸습니다. 정답은:\n`{sentence}`\n\n입력한 내용:\n`{msg.content}`\n\n차이점:\n{differences}")
+            await ctx.send(
+                f"틀렸습니다. 정답은:\n```{sentence}```\n\n입력한 내용:\n```{msg.content}```\n\n차이점:\n```{differences}```"
+            )
 
         await ask_for_retry(ctx)  # 연습을 다시 시도할지 묻기
 
